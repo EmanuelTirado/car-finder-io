@@ -1,0 +1,71 @@
+type User {
+  id: ID!,
+  firstName: String
+  lastName: String
+  email: String
+  avatar: String
+  gender: String
+  dateOfBirth: String
+  reviews: [Review] @relation(name: "WROTE", direction: "OUT")
+}
+
+type Vehicle {
+  id: ID!
+  make: String
+  model: String
+  year: String
+  fuel: [String]
+  hpMin: Int
+  hpMax: Int
+  cylindersMin: Int
+  cylindersMax: Int
+  trany: [String]
+  drivenWheels: [String]
+  doorsMax: Int
+  doorsMin: Int
+  size: String
+  highwayMpgMin: Float
+  highwayMpgMax: Float
+  cityMpgMin: Float
+  cityMpgMax: Float
+  popularity: Int
+  minMsrp: Int
+  maxMsrp: Int
+  reviews: [Review] @relation(name: "IS_ABOUT", direction: "IN")
+  avgStars: Float 
+    @cypher (
+      statement: "MATCH (r:Review)-[:IS_ABOUT]->(this) RETURN toFloat(avg(r.starsRating))"
+    )
+}
+
+type Review {
+  id: ID!
+  starsRating: Int
+  reviewText: String
+  writtenBy: User @relation(name: "WROTE", direction: "IN")
+  vehicle: Vehicle @relation(name: "IS_ABOUT", direction: "OUT")
+  createdAt: String
+}
+
+type Occupation {
+  name: String
+  users: [User] @relation(name: "MEMBER_OF", direction: "IN")
+}
+
+type Location {
+  name: String
+  users: [User] @relation(name: "MEMBER_OF", direction: "IN")
+}
+
+type AgeGroup {
+  name: String
+  users: [User] @relation(name: "MEMBER_OF", direction: "IN")
+}
+
+type Query {
+  usersBySubstring(substring: String): [User]
+    @cypher(
+      statement: "MATCH (u:User) WHERE u.firstName CONTAINS $substring RETURN u"
+    )
+  user(id: ID!): User
+}
