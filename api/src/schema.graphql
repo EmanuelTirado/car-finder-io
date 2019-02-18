@@ -6,6 +6,10 @@ type User {
   avatar: String
   gender: String
   dateOfBirth: String
+  reviewCount: Int
+    @cypher (
+      statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN count(r)"
+    )
   reviews: [Review] @relation(name: "WROTE", direction: "OUT")
 }
 
