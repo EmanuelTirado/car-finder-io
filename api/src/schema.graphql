@@ -1,5 +1,5 @@
 type User {
-  id: ID!,
+  id: Int!,
   firstName: String
   lastName: String
   email: String
@@ -10,7 +10,7 @@ type User {
 }
 
 type Vehicle {
-  id: ID!
+  id: Int!
   make: String
   model: String
   year: String
@@ -39,7 +39,7 @@ type Vehicle {
 }
 
 type Review {
-  id: ID!
+  id: Int!
   starsRating: Int
   reviewText: String
   writtenBy: User @relation(name: "WROTE", direction: "IN")
@@ -48,17 +48,17 @@ type Review {
 }
 
 type Occupation {
-  name: String
+  name: String!
   users: [User] @relation(name: "MEMBER_OF", direction: "IN")
 }
 
 type Location {
-  name: String
+  name: String!
   users: [User] @relation(name: "MEMBER_OF", direction: "IN")
 }
 
 type AgeGroup {
-  name: String
+  name: String!
   users: [User] @relation(name: "MEMBER_OF", direction: "IN")
 }
 
@@ -67,5 +67,5 @@ type Query {
     @cypher(
       statement: "MATCH (u:User) WHERE u.firstName CONTAINS $substring RETURN u"
     )
-  user(id: ID!): User
+  user(id: Int!): User
 }
