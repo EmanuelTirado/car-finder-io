@@ -22,6 +22,7 @@ type Vehicle {
   make: String
   model: String
   year: String
+  images: [String]
   fuel: [String]
   hpMin: Int
   hpMax: Int
