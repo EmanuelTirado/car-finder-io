@@ -90,6 +90,6 @@ type Query {
   
   vehiclesTopN(first: Int = 10, offset: Int = 0): [Vehicle]
     @cypher(
-      statement: "MATCH (review:Review)-[:IS_ABOUT]->(car:Vehicle) WITH car, count(review) as reviewCount, avg(review.starsRating) as avgStars WHERE reviewCount > 1 RETURN car LIMIT $first SKIP $offset;
+      statement: "MATCH (review:Review)-[:IS_ABOUT]->(car:Vehicle) WITH car, count(review) as reviewCount, avg(review.starsRating) as avgStars WHERE reviewCount > 1 RETURN car LIMIT $first SKIP $offset;"
     )
 }
