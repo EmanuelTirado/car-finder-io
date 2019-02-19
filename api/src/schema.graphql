@@ -81,15 +81,15 @@ type Query {
     @cypher(
       statement: "MATCH (u:User) WHERE u.firstName CONTAINS $substring RETURN u"
     )
-  
-  user(id: Int!): User
-  
-  vehicle(id: Int!): Vehicle
-  
-  manufacturer(name: String!): Manufacturer
-  
-  vehiclesTopN(first: Int = 10, offset: Int = 0): [Vehicle]
+
+  vehiclesTopN: [Vehicle]
     @cypher(
-      statement: "MATCH (review:Review)-[:IS_ABOUT]->(car:Vehicle) WITH car, count(review) as reviewCount, avg(review.starsRating) as avgStars WHERE reviewCount > 1 RETURN car LIMIT $first SKIP $offset;"
+      statement: "MATCH (review:Review)-[:IS_ABOUT]->(car:Vehicle) WITH car, count(review) as reviewCount, avg(review.starsRating) as avgStars WHERE reviewCount > 1 RETURN car ORDER BY avgStars DESC"
     )
+  
+  user(id: Int): User
+  
+  vehicle(id: Int): Vehicle
+  
+  manufacturer(name: String): Manufacturer
 }
