@@ -6,6 +6,10 @@ type User {
   avatar: String
   gender: String
   dateOfBirth: String
+  avgStars: Float 
+    @cypher (
+      statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.starsRating))"
+    )
   reviewCount: Int
     @cypher (
       statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN count(r)"
