@@ -6,6 +6,7 @@ type User {
   avatar: String
   gender: String
   dateOfBirth: String
+  region: Region @relation(name: "MEMBER_OF", direction: "OUT")
   avgStars: Float 
     @cypher (
       statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.starsRating))"
@@ -61,7 +62,7 @@ type Occupation {
   users: [User] @relation(name: "MEMBER_OF", direction: "IN")
 }
 
-type Location {
+type Region {
   name: String!
   users: [User] @relation(name: "MEMBER_OF", direction: "IN")
 }
@@ -84,12 +85,34 @@ type Query {
 
   vehiclesTopN: [Vehicle]
     @cypher(
-      statement: "MATCH (review:Review)-[:IS_ABOUT]->(car:Vehicle) WITH car, count(review) as reviewCount, avg(review.starsRating) as avgStars WHERE reviewCount > 1 RETURN car ORDER BY avgStars DESC"
+      statement: """
+        MATCH (review:Review)-[:IS_ABOUT]->(car:Vehicle)
+        WITH car, count(review) as reviewCount, avg(review.starsRating) as avgStars 
+        WHERE reviewCount > 1 RETURN car ORDER BY avgStars DESC
+      """
     )
   
-  user(id: Int): User
+  user(id: Int, _id: Int): User
   
-  vehicle(id: Int): Vehicle
+  vehicle(id: Int, _id: Int): Vehicle
   
-  manufacturer(name: String): Manufacturer
+  manufacturer(name: String, _id: Int): Manufacturer
+}
+
+input ReviewInput {
+  starsRating: Int
+  reviewText: String
+}
+
+type Mutation {
+    newReview(userId: Int!, vehicleId: Int!, review: ReviewInput!): Review
+      @cypher(
+        statement: """
+          MATCH (user:User) WHERE ID(user) = toInteger($userId)
+          MATCH (vehicle:Vehicle) WHERE ID(vehicle) = toInteger($vehicleId)
+          CREATE (newReview:Review { starsRating: $review.starsRating, reviewText: $review.reviewText }) 
+          CREATE (user)-[:WROTE]->(newReview)-[:IS_ABOUT]->(vehicle)
+          RETURN newReview
+        """
+      )
 }
