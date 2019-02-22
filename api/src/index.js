@@ -1,7 +1,7 @@
 import { typeDefs } from "./graphql-schema"
 import { ApolloServer } from "apollo-server"
 import { v1 as neo4j } from "neo4j-driver"
-import { makeAugmentedSchema } from "neo4j-graphql-js"
+import { makeAugmentedSchema,  } from "neo4j-graphql-js"
 import dotenv from "dotenv"
 
 // set environment variables from ../.env
@@ -18,6 +18,8 @@ dotenv.config()
 const schema = makeAugmentedSchema({
   typeDefs
 })
+
+
 
 /*
  * Create a Neo4j driver instance to connect to the database

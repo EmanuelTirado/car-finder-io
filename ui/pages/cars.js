@@ -1,7 +1,9 @@
 import App from "../components/App"
+import VehiclesList from "../components/VehiclesList";
 
 export default () => (
   <App>
-    <h1>Cars</h1>
+    <h3>Browse our Vehicle Database</h3>
+    <VehiclesList />
   </App>
 )

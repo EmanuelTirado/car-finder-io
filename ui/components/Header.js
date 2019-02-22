@@ -1,10 +1,8 @@
-import { useContext } from "react"
 import Link from "next/link"
 import Navbar from "react-bootstrap/Navbar"
 import Nav from "react-bootstrap/Nav"
-import Image from "react-bootstrap/Image"
 import { withRouter } from "next/router"
-import { UserContext } from "../lib/user-context"
+import HeaderLoginStatus from "./HeaderLoginStatus"
 
 const links = [
   { href: "/", name: "Home" },
@@ -13,10 +11,11 @@ const links = [
 ]
 
 const Header = ({ router: { pathname } }) => {
-  const userCtx = useContext(UserContext)
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
-      <Navbar.Brand>🚘 CAR FINDER PRO</Navbar.Brand>
+      <Navbar.Brand>
+        🚘 <strong>CAR FINDER</strong> PRO
+      </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
       <Navbar.Collapse className="justify-content-end">
@@ -35,16 +34,7 @@ const Header = ({ router: { pathname } }) => {
           ))}
         </Nav>
         <Navbar.Text className="ml-3">
-          Signed in as:{" "}
-          <a href="#login">
-            {userCtx.firstName} {userCtx.lastName}
-            <Image
-              src={userCtx.avatar}
-              roundedCircle
-              style={{ width: "25px", height: "25px" }}
-              className="ml-2 bg-light"
-            />
-          </a>
+          <HeaderLoginStatus />
         </Navbar.Text>
       </Navbar.Collapse>
     </Navbar>

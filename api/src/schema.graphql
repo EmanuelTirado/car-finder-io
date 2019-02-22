@@ -7,6 +7,7 @@ type User {
   gender: String
   dateOfBirth: String
   region: Region @relation(name: "MEMBER_OF", direction: "OUT")
+  occupation: Occupation @relation(name: "MEMBER_OF", direction: "OUT")
   avgStars: Float 
     @cypher (
       statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN toFloat(avg(r.starsRating))"
@@ -16,6 +17,7 @@ type User {
       statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN count(r)"
     )
   reviews: [Review] @relation(name: "WROTE", direction: "OUT")
+  categories: [MarketCategory] @relation(name: "DESCRIBES", direction: "IN")
 }
 
 type Vehicle {
@@ -57,6 +59,15 @@ type Review {
   createdAt: String
 }
 
+type MarketCategory {
+  name: String!
+  vehicles: [Vehicle] @relation(name: "DESCRIBES", direction: "OUT")
+  vehicleCount: Int
+    @cypher(
+      statement: "MATCH (this)-[:DESCRIBES]->(v:Vehicle) RETURN count(v)"
+    )
+}
+
 type Occupation {
   name: String!
   users: [User] @relation(name: "MEMBER_OF", direction: "IN")
@@ -75,12 +86,21 @@ type AgeGroup {
 type Manufacturer {
   name: String!
   vehicles: [Vehicle] @relation(name: "MAKES", direction: "OUT")
+  vehicleCount: Int
+    @cypher(
+      statement: "MATCH (this)-[:MAKES]->(v:Vehicle) RETURN count(v)"
+    )
 }
 
 type Query {
   usersBySubstring(substring: String): [User]
     @cypher(
       statement: "MATCH (u:User) WHERE u.firstName CONTAINS $substring RETURN u"
+    )
+
+  vehiclesBySubstring(substring: String): [Vehicle]
+    @cypher(
+      statement: "MATCH (v:Vehicle) WHERE (v.make + ' ' + v.model) CONTAINS $substring RETURN v"
     )
 
   vehiclesTopN: [Vehicle]

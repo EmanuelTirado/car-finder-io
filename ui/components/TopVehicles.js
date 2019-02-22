@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useQuery } from "react-apollo-hooks"
-import CardColumns from "react-bootstrap/CardColumns"
 import VehicleCard from "./VehicleCard"
 import VehicleModal from "./VehicleModal"
 import gql from "graphql-tag"
@@ -52,7 +51,7 @@ function TopVehicles() {
   const hideModal = () => setModalOpenState(false)
 
   return (
-    <div>
+    <>
       <div className="mt-4 d-flex flex-wrap justify-content-between">
         {vehicles.map((vehicle, index) => (
           <VehicleCard
@@ -70,7 +69,7 @@ function TopVehicles() {
         onHide={hideModal}
         vehicle={selected}
       />
-    </div>
+    </>
   )
 }
 

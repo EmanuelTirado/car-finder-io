@@ -1,5 +1,6 @@
 import React, { Component, createContext } from "react"
 import gql from "graphql-tag"
+import NavItem from "react-bootstrap/NavItem";
 
 export const UserContext = createContext()
 export const UserConsumer = UserContext.Consumer
@@ -8,6 +9,7 @@ class UserProvider extends Component {
   state = {
     status: "logged-out",
     id: null,
+    _id: null,
     firstName: "",
     lastName: "",
     avatar: ""
@@ -25,6 +27,7 @@ class UserProvider extends Component {
       query($userId: Int!) {
         user(id: $userId) {
           id
+          _id
           firstName
           lastName
           avatar
@@ -38,17 +41,35 @@ class UserProvider extends Component {
       }
     })
 
-    this.setState({
-      status: "logged-in",
-      id: data.user.id,
-      firstName: data.user.firstName,
-      lastName: data.user.lastName,
-      avatar: data.user.avatar
-    })
+    this.setState(
+      {
+        status: "logged-in",
+        id: data.user.id,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        avatar: data.user.avatar
+      },
+      () => {
+        this.persist()
+      }
+    )
+  }
+
+  persist = () => {
+    localStorage.setItem("user-info", 
+      JSON.stringify({
+        ...this.state
+      })
+    )
   }
 
   componentDidMount() {
-    this.authenticate({ id: 1 })
+    const values = localStorage.getItem("user-info")
+    if (values) {
+      this.setState({
+        ...JSON.parse(values)
+      })
+    }
   }
 
   render() {
