@@ -103,6 +103,18 @@ type Query {
       statement: "MATCH (v:Vehicle) WHERE (v.make + ' ' + v.model) CONTAINS $substring RETURN v"
     )
 
+  vehicleByTags(searchTags: [String]): [Vehicle]
+    @cypher(
+      statement: """
+        WITH $searchTags as tags
+        UNWIND tags AS tag
+        MATCH (cat { name: tag })-[:DESCRIBES|:MAKES]->(v:Vehicle)
+        WITH v, size(tags) as possible, count(cat) as matches
+        WHERE matches = possible
+        RETURN v        
+      """
+    )
+
   vehiclesTopN: [Vehicle]
     @cypher(
       statement: """
