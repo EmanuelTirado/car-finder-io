@@ -32,7 +32,7 @@ function UserReviews({ reviews }) {
       </h5>
       <Row>
         <Col md={12} xl={2}>
-          <ReactStars count={5} value={review.starsRating} size={18} />
+          <ReactStars count={5} value={review.starsRating} size={18} edit={false} />
         </Col>
         <Col xl={10}>{review.reviewText}</Col>
       </Row>

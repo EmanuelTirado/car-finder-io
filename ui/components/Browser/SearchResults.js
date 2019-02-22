@@ -9,25 +9,7 @@ const GET_VEHICLES_FILTERED = gql`
       make
       model
       avgStars
-      drivenWheels
       images
-      fuel
-      hpMin
-      hpMax
-      cylindersMin
-      cylindersMax
-      trany
-      drivenWheels
-      doorsMax
-      doorsMin
-      size
-      highwayMpgMin
-      highwayMpgMax
-      cityMpgMin
-      cityMpgMax
-      popularity
-      minMsrp
-      maxMsrp
     }
   }
 `
@@ -50,7 +32,7 @@ function SearchResults({ tags }) {
   return (
     <div className="mt-4 d-flex flex-wrap justify-content-between">
       {vehicles.map((vehicle, index) => (
-        <VehicleCard key={index} vehicle={vehicle} onDetails={() => {}} />
+        <VehicleCard key={index} vehicle={vehicle} width="15rem" onDetails={() => {}} />
       ))}
     </div>
   )
