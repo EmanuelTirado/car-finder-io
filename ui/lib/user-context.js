@@ -1,6 +1,5 @@
 import React, { Component, createContext } from "react"
 import gql from "graphql-tag"
-import NavItem from "react-bootstrap/NavItem";
 
 export const UserContext = createContext()
 export const UserConsumer = UserContext.Consumer
@@ -44,6 +43,7 @@ class UserProvider extends Component {
     this.setState(
       {
         status: "logged-in",
+        _id: parseInt(data.user._id, 10),
         id: data.user.id,
         firstName: data.user.firstName,
         lastName: data.user.lastName,

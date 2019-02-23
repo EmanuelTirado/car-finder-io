@@ -1,7 +1,7 @@
 import Jumbotron from "react-bootstrap/Jumbotron"
 import Button from "react-bootstrap/Button"
 import App from "../components/App"
-import TopVehicles from "../components/TopVehicles"
+import TopVehicles from "../components/Home/TopVehicles"
 
 export default () => (
   <App>

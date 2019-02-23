@@ -4,6 +4,7 @@ import Carousel from "react-bootstrap/Carousel"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import Button from "react-bootstrap/Button"
+import VehicleDetails from "./VehicleDetails"
 
 /*
   year: String
@@ -47,35 +48,8 @@ function VehicleModal({ isOpen, onHide, vehicle }) {
               ))}
             </Carousel>
           </Col>
-          <Col sm="7">
-            <Table striped bordered hover size="sm">
-              <tbody>
-                <tr>
-                  <td className="">Horse Power</td>
-                  <td>
-                    {vehicle.hpMin === vehicle.hpMax
-                      ? vehicle.hpMax
-                      : `${vehicle.hpMin} – ${vehicle.hpMax}`}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Fuel Type</td>
-                  <td>{(vehicle.fuel || []).join(", ") || "-"}</td>
-                </tr>
-                <tr>
-                  <td>Cylinders</td>
-                  <td>
-                    {vehicle.cylindersMin === vehicle.cylindersMax
-                      ? vehicle.cylindersMax
-                      : `${vehicle.cylindersMin} – ${vehicle.cylindersMax}`}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Transmission</td>
-                  <td>{(vehicle.trany || []).join(", ") || "-"}</td>
-                </tr>
-              </tbody>
-            </Table>
+          <Col>
+            <VehicleDetails vehicle={vehicle} />
           </Col>
         </Row>
       </Modal.Body>

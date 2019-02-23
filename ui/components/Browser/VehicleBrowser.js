@@ -1,26 +1,26 @@
 import React, { useState } from "react"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
-import SidePanel from "./SidePanel";
-import SearchResults from "./SearchResults";
+import SidePanel from "./SidePanel"
+import SearchResults from "./SearchResults"
 
 function VehicleBrowser() {
-  const [tags, setTags] = useState([])
+  const [filters, setFilters] = useState({ tags: [], manufacturers: [] })
 
   return (
     <Row className="mt-4">
       <Col
-        xs={5}
-        md={4}
-        lg={3}
+        xs="5"
+        md="4"
+        lg="3"
         style={{
           borderRight: "1px solid #ccc"
         }}
       >
-        <SidePanel onUpdate={(updatedTags) => setTags(updatedTags)} />
+        <SidePanel onUpdate={updatedTags => setFilters(updatedTags)} />
       </Col>
       <Col>
-        <SearchResults tags={tags} />
+        <SearchResults filters={filters} />
       </Col>
     </Row>
   )

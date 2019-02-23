@@ -1,5 +1,5 @@
 import App from "../components/App"
-import UsersList from "../components/UsersList"
+import UsersList from "../components/Users/UsersList"
 
 export default () => (
   <App>

@@ -1,8 +1,9 @@
 import React, { useState } from "react"
 import Table from "react-bootstrap/Table"
 import Button from "react-bootstrap/Button"
-import UserListRows from "./UserListRows"
+import UsersListRows from "./UsersListRows"
 import UserReviewsModal from "./UserReviewsModal"
+import { repeat } from "../../lib/helpers"
 
 function UsersList() {
   const [pages, setPages] = useState(1)
@@ -31,19 +32,20 @@ function UsersList() {
             <th className="text-center">Reviews</th>
             <th className="text-center">Avg. Ratings</th>
             <th className="text-center">Region</th>
-            <th className="text-center"></th>
+            <th className="text-center" />
           </tr>
         </thead>
         <tbody>
-          {Array(pages)
-            .fill(1)
-            .map((page, index) => (
-              <UserListRows
+          {repeat(
+            index => (
+              <UsersListRows
                 key={index}
                 pageNumber={index}
                 showUserReviewsModal={showUserReviewsModal}
               />
-            ))}
+            ),
+            pages
+          )}
         </tbody>
       </Table>
       <Button

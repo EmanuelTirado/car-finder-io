@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { useQuery } from "react-apollo-hooks"
-import VehicleCard from "./VehicleCard"
-import VehicleModal from "./VehicleModal"
+import VehicleCard from "../Vehicles/VehicleCard"
+import VehicleModalSimple from "../Vehicles/VehicleModalSimple"
 import gql from "graphql-tag"
 
 const TOP_VEHICLES_QUERY = gql`
-  {
+  query getTopVehicles {
     vehiclesTopN(first: 10) {
       make
       model
@@ -64,7 +64,7 @@ function TopVehicles() {
           />
         ))}
       </div>
-      <VehicleModal
+      <VehicleModalSimple
         isOpen={modalOpenState}
         onHide={hideModal}
         vehicle={selected}

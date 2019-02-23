@@ -1,40 +1,55 @@
-import { useQuery } from "react-apollo-hooks"
-import gql from "graphql-tag"
-import VehicleCard from "../VehicleCard"
+import React, { useState } from "react"
+import Button from "react-bootstrap/Button"
+import PartialResults from "./PartialResults"
+import { repeat } from "../../lib/helpers"
+import VehicleModalExt from "../Vehicles/VehicleModalExt"
 
-const GET_VEHICLES_FILTERED = gql`
-  query($tags: [String]) {
-    vehicleByTags(searchTags: $tags) {
-      _id
-      make
-      model
-      avgStars
-      images
-    }
-  }
-`
+function SearchResults({ filters }) {
+  const [pages, setPages] = useState(1)
+  const [selectedVehicleId, setSelectedVehicleId] = useState(null)
+  const [vehicleDetailsModalState, setVehicleDetailsModalState] = useState(
+    false
+  )
 
-function SearchResults({ tags }) {
-  const { data, loading, error } = useQuery(GET_VEHICLES_FILTERED, {
-    variables: { tags }
-  })
-
-  if (loading) {
-    return <div>Loading...</div>
+  const handleVehicleDetailsButtonClick = vehicleId => {
+    setSelectedVehicleId(vehicleId)
+    setVehicleDetailsModalState(true)
   }
 
-  if (error) {
-    return <div>An error has occurred.</div>
+  const handleOnModalHide = () => {
+    setVehicleDetailsModalState(false)
   }
-
-  const vehicles = data.vehicleByTags || []
 
   return (
-    <div className="mt-4 d-flex flex-wrap justify-content-between">
-      {vehicles.map((vehicle, index) => (
-        <VehicleCard key={index} vehicle={vehicle} width="15rem" onDetails={() => {}} />
-      ))}
-    </div>
+    <>
+      <div className="mt-4 d-flex flex-wrap justify-content-between">
+        {repeat(
+          index => (
+            <PartialResults
+              key={index}
+              filters={filters}
+              pageNumber={index}
+              onVehicleDetailsButtonClick={handleVehicleDetailsButtonClick}
+            />
+          ),
+          pages
+        )}
+      </div>
+      <Button
+        variant="link"
+        onClick={() => {
+          setPages(pages + 1)
+        }}
+        className="mb-4"
+      >
+        Load More
+      </Button>
+      <VehicleModalExt
+        vehicleId={selectedVehicleId}
+        onHide={handleOnModalHide}
+        isOpen={vehicleDetailsModalState}
+      />
+    </>
   )
 }
 

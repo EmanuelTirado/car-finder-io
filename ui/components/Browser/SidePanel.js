@@ -18,9 +18,10 @@ const GET_DATA = gql`
 
 function SidePanel({ onUpdate }) {
   const { data, loading } = useQuery(GET_DATA)
+  const [manufacturers, setManufacturers] = useState([])
   const [tags, setTags] = useState([])
 
-  useEffect(() => onUpdate(tags), [tags])
+  useEffect(() => onUpdate({ tags, manufacturers }), [tags, manufacturers])
 
   if (loading) {
     return <div>Loading...</div>
@@ -28,6 +29,16 @@ function SidePanel({ onUpdate }) {
 
   const makers = data.manufacturers || []
   const cats = data.categories || []
+
+  const updateManufacturers = (checked, maker) => {
+    if (checked) {
+      setManufacturers([...manufacturers, maker])
+    } else {
+      const index = manufacturers.indexOf(maker)
+      manufacturers.splice(index, 1)
+      setManufacturers([...manufacturers])
+    }
+  }
 
   const updateTags = (checked, tag) => {
     if (checked) {
@@ -49,7 +60,9 @@ function SidePanel({ onUpdate }) {
               type="checkbox"
               id={`makerChk${index}`}
               label={`${maker.name} (${maker.vehicleCount})`}
-              onChange={ev => updateTags(ev.target.checked, maker.name)}
+              onChange={ev =>
+                updateManufacturers(ev.target.checked, maker.name)
+              }
             />
           </li>
         ))}
