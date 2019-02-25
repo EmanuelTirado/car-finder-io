@@ -119,9 +119,9 @@ type Query {
         MATCH (v:Vehicle)
         WHERE (v.make IN makers OR size(makers) = 0) 
         OPTIONAL MATCH (cat:MarketCategory)-[:DESCRIBES]->(v:Vehicle)
-        WHERE (cat.name IN tags OR size(tags) = 0)
-        WITH DISTINCT v
-        RETURN v;
+        WITH tags, v, cat
+        WHERE size(tags) = 0 OR (cat.name in tags and cat is not null) 
+        RETURN DISTINCT v
       """
     )
 
