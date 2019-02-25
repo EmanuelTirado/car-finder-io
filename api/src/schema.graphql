@@ -116,10 +116,12 @@ type Query {
     @cypher(
       statement: """
         WITH $searchTags as tags, $manufacturers as makers
-        MATCH (cat:MarketCategory)-[:DESCRIBES]->(v:Vehicle)
+        MATCH (v:Vehicle)
         WHERE (v.make IN makers OR size(makers) = 0) 
-          AND (cat.name IN tags OR size(tags) = 0)
-        RETURN v
+        OPTIONAL MATCH (cat:MarketCategory)-[:DESCRIBES]->(v:Vehicle)
+        WHERE (cat.name IN tags OR size(tags) = 0)
+        WITH DISTINCT v
+        RETURN v;
       """
     )
 
