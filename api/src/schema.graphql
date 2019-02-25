@@ -17,7 +17,15 @@ type User {
       statement: "MATCH (this)-[:WROTE]->(r:Review) RETURN count(r)"
     )
   reviews: [Review] @relation(name: "WROTE", direction: "OUT")
-  categories: [MarketCategory] @relation(name: "DESCRIBES", direction: "IN")
+  hasReviewedVehicle(vehicleId: Int!): Boolean
+    @cypher(
+      statement: """
+        MATCH (this)-[:WROTE]->(r:Review)-[:IS_ABOUT]->(v:Vehicle)
+        WHERE  ID(v) = toInteger($vehicleId)
+        RETURN count(r) > 0
+      """
+    )
+
 }
 
 type Vehicle {
@@ -48,6 +56,7 @@ type Vehicle {
     @cypher (
       statement: "MATCH (r:Review)-[:IS_ABOUT]->(this) RETURN toFloat(avg(r.starsRating))"
     )
+  categories: [MarketCategory] @relation(name: "DESCRIBES", direction: "IN")
 }
 
 type Review {
@@ -128,15 +137,6 @@ type Query {
   vehicle(id: Int, _id: Int): Vehicle
   
   manufacturer(name: String, _id: Int): Manufacturer
-
-  hasUserReviewedVehicle(userId: Int!, vehicleId: Int!): Boolean
-    @cypher(
-      statement: """
-        MATCH (u:User)-[:WROTE]->(r:Review)-[:IS_ABOUT]->(v:Vehicle)
-        WHERE ID(u) = toInteger($userId) and ID(v) = toInteger($vehicleId)
-        RETURN count(r) > 0
-      """
-    )
 }
 
 input ReviewInput {
