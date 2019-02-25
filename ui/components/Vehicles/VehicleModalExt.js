@@ -77,8 +77,8 @@ function VehicleModalExt({ vehicleId, isOpen, onHide, onNewReview }) {
   const userCtx = useContext(UserContext)
   const userId = userCtx._id
   const { data, loading, error } = useQuery(GET_VEHICLE_DATA, {
-    variables: { vehicleId, userId },
-    skip: !(vehicleId && userCtx._id)
+    variables: { vehicleId, userId: userId || -1 },
+    skip: !vehicleId
   })
   const submitReview = useMutation(POST_REVIEW, {
     variables: {
@@ -121,12 +121,12 @@ function VehicleModalExt({ vehicleId, isOpen, onHide, onNewReview }) {
               <Tab eventKey="reviews" title="Reviews">
                 <UserReviews reviews={vehicle.reviews} />
               </Tab>
-              <Tab
-                eventKey="writeReview"
-                title="Write a Review"
-                disabled={userCtx.status !== "logged-in"}
-              >
-                {currentUser.hasReviewedVehicle ? (
+              <Tab eventKey="writeReview" title="Write a Review">
+                {!currentUser ? (
+                  <Alert variant="warning">
+                    Please log in to submit your review.
+                  </Alert>
+                ) : currentUser.hasReviewedVehicle ? (
                   <Alert variant="success">Thank you for your review!</Alert>
                 ) : (
                   <VehicleReviewForm
