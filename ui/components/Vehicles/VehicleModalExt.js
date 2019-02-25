@@ -8,13 +8,14 @@ import Button from "react-bootstrap/Button"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Carousel from "react-bootstrap/Carousel"
+import Alert from "react-bootstrap/Alert"
 import { UserContext } from "../../lib/user-context"
 import UserReviews from "../Users/UserReviews"
 import VehicleDetails from "./VehicleDetails"
 import VehicleReviewForm from "./VehicleReviewForm"
 
 const GET_VEHICLE_DATA = gql`
-  query getVehicleData($vehicleId: Int!) {
+  query getVehicleData($vehicleId: Int!, $userId: Int!) {
     vehicle(_id: $vehicleId) {
       make
       model
@@ -48,6 +49,9 @@ const GET_VEHICLE_DATA = gql`
         }
       }
     }
+    currentUser: user(_id: $userId) {
+      hasReviewedVehicle(vehicleId: $vehicleId)
+    }
   }
 `
 
@@ -71,11 +75,11 @@ const POST_REVIEW = gql`
 function VehicleModalExt({ vehicleId, isOpen, onHide, onNewReview }) {
   const [newReview, setNewReview] = useState({})
   const userCtx = useContext(UserContext)
-  const { data, loading, error } = useQuery(GET_VEHICLE_DATA, {
-    variables: { vehicleId },
-    skip: !vehicleId
-  })
   const userId = userCtx._id
+  const { data, loading, error } = useQuery(GET_VEHICLE_DATA, {
+    variables: { vehicleId, userId },
+    skip: !(vehicleId && userCtx._id)
+  })
   const submitReview = useMutation(POST_REVIEW, {
     variables: {
       userId,
@@ -87,7 +91,7 @@ function VehicleModalExt({ vehicleId, isOpen, onHide, onNewReview }) {
 
   if (!data || error || loading) return <div />
 
-  const { vehicle } = data
+  const { vehicle, currentUser } = data
 
   return (
     <Modal show={isOpen} onHide={onHide} size="xl" centered>
@@ -122,10 +126,14 @@ function VehicleModalExt({ vehicleId, isOpen, onHide, onNewReview }) {
                 title="Write a Review"
                 disabled={userCtx.status !== "logged-in"}
               >
-                <VehicleReviewForm
-                  onSubmit={submitReview}
-                  onChange={values => setNewReview(values)}
-                />
+                {currentUser.hasReviewedVehicle ? (
+                  <Alert variant="success">Thank you for your review!</Alert>
+                ) : (
+                  <VehicleReviewForm
+                    onSubmit={submitReview}
+                    onChange={values => setNewReview(values)}
+                  />
+                )}
               </Tab>
             </Tabs>
           </Col>

@@ -1,6 +1,5 @@
 import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal"
-import ListGroup from "react-bootstrap/ListGroup"
 import gql from "graphql-tag"
 import { useQuery } from "react-apollo-hooks"
 import UserReviews from "./UserReviews";
@@ -23,21 +22,21 @@ const GET_USER_REVIEWS = gql`
 `
 
 function UsersReviewsModal({ userId, isOpen, onHide }) {
-  if (!userId) {
-    return <div />
-  }
-
   const { data, loading } = useQuery(GET_USER_REVIEWS, {
     variables: {
       userId
-    }
+    },
+    skip: !userId
   })
+
+  if (!data)
+    return <div />
 
   const { user } = data
 
   return (
     <Modal show={isOpen} onHide={onHide} size="lg" centered>
-      {loading ? (
+      {loading && !user ? (
         <Modal.Body>Loading...</Modal.Body>
       ) : (
         <>
