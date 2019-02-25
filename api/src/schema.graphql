@@ -128,6 +128,15 @@ type Query {
   vehicle(id: Int, _id: Int): Vehicle
   
   manufacturer(name: String, _id: Int): Manufacturer
+
+  hasUserReviewedVehicle(userId: Int!, vehicleId: Int!): Boolean
+    @cypher(
+      statement: """
+        MATCH (u:User)-[:WROTE]->(r:Review)-[:IS_ABOUT]->(v:Vehicle)
+        WHERE ID(u) = toInteger($userId) and ID(v) = toInteger($vehicleId)
+        RETURN count(r) > 0
+      """
+    )
 }
 
 input ReviewInput {
