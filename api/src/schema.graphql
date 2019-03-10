@@ -25,7 +25,22 @@ type User {
         RETURN count(r) > 0
       """
     )
-
+  recommended(threshold: Float!): [Vehicle]
+    @cypher(
+      statement: """
+        MATCH (this)-->(r:Review)-->(v:Vehicle)
+        WITH count(r) as reviewCount
+        MATCH (this)-->(r1:Review)-->(v:Vehicle)<--(r2:Review)<--(u2:User)
+        WHERE (NOT u2 = this) AND (abs(r2.starsRating - r1.starsRating) <= 2) 
+        WITH this as u1, u2, tofloat(count(distinct v)) / reviewCount as sim
+        WHERE sim > $threshold
+        MATCH (u2)-->(r:Review)-->(v:Vehicle)
+        WHERE (NOT (v)<--(:Review)--(u1)) 
+        WITH v, sum(r.starsRating) / count(r) as avgRating
+        WHERE avgRating >= 3
+        RETURN DISTINCT v
+      """
+    )
 }
 
 type Vehicle {
