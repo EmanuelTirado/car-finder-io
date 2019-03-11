@@ -86,7 +86,7 @@ function VehicleModalExt({ vehicleId, isOpen, onHide, onNewReview }) {
       vehicleId,
       ...newReview
     },
-    refetchQueries: ["getVehicleData", "searchVehicles", "getTopVehicles"]
+    refetchQueries: ["getVehicleData", "searchVehicles", "getTopVehicles", "userRecommendations"]
   })
 
   if (!data || error || loading) return <div />

@@ -1,16 +1,24 @@
+import { useContext } from "react"
 import Link from "next/link"
 import Navbar from "react-bootstrap/Navbar"
 import Nav from "react-bootstrap/Nav"
 import { withRouter } from "next/router"
 import HeaderLoginStatus from "./HeaderLoginStatus"
+import { UserContext } from "../lib/user-context"
 
-const links = [
-  { href: "/", name: "Home" },
-  { href: "/cars", name: "Cars" },
-  { href: "/users", name: "People" }
-]
+function Header({ router: { pathname } }) {
+  const userCtx = useContext(UserContext)
 
-const Header = ({ router: { pathname } }) => {
+  const links = [
+    { href: "/", name: "Home" },
+    { href: "/cars", name: "Cars" },
+    { href: "/users", name: "People" }
+  ]
+
+  if (userCtx.status === "logged-in") {
+    links.push({ href: "/recommendations", name: "Your Recommendations"})
+  }
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Navbar.Brand>
